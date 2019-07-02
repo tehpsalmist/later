@@ -7,6 +7,8 @@ const { getMongoURL } = require('./config')
 const { jobsRouter } = require('./routes')
 const { freshJobs } = require('./controllers')
 
+const port = process.env.PORT || 2300
+
 server.use(express.json())
 server.use(express.urlencoded({ extended: true }))
 
@@ -24,4 +26,4 @@ const mainJob = new CronJob({
 
 mainJob.start()
 
-server.listen(2300, () => console.log('ready to rock'))
+server.listen(port, () => console.log('ready to rock'))
