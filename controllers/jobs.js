@@ -74,7 +74,7 @@ exports.deleteJob = async (req, res) => {
   }
 
   if (!deletion) {
-    return res.status(404).json({ message: 'Job not found', success: false })
+    return res.status(404).json({ message: 'job not found', success: false })
   }
 
   const { __v, nextTick: removed, ...returnJob } = deletion._doc
@@ -132,6 +132,10 @@ exports.getJob = async (req, res) => {
   if (getter instanceof Error) {
     console.error(getter)
     return res.status(500).json({ message: getter.message, stack: getter.stack, name: getter.name })
+  }
+
+  if (!getter) {
+    return res.status(404).json({ message: 'job not found' })
   }
 
   const { nextTick, __v, ...job } = getter._doc
