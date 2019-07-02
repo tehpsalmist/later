@@ -1,0 +1,25 @@
+{
+  "name": "later",
+  "version": "0.0.1",
+  "description": "A timer service designed for integration with serverless systems",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon"
+  },
+  "keywords": [
+    "cron",
+    "serverless",
+    "timers"
+  ],
+  "author": "Ben Steward <bstewardcodes@gmail.com> (https://tehpsalmist.com)",
+  "license": "ISC",
+  "dependencies": {
+    "cron": "^1.7.1",
+    "express": "^4.16.4",
+    "express-validator": "^5.3.1",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.25",
+    "mongoose": "^5.5.5",
+    "node-fetch": "^2.5.0"
+  }
+}

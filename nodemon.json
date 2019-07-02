@@ -1,0 +1,8 @@
+{
+  "events": {
+    "start": "clear"
+  },
+  "ignore": [
+    "nodemon.json"
+  ]
+}
