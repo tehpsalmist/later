@@ -1,7 +1,7 @@
-const { MONGO_CRON_USER, MONGO_CRON_PW, MONGO_CRON_HOST_PORT, DEV, PROD_CONNECTION_URL } = process.env
+const { DEV, DEV_LATER_CONNECTION_URL, PROD_CONNECTION_URL } = process.env
 
 module.exports = {
   getMongoURL: () => DEV
-    ? `mongodb://${MONGO_CRON_USER}:${MONGO_CRON_PW}@${MONGO_CRON_HOST_PORT}/cron-jobs`
+    ? `mongodb://${DEV_LATER_CONNECTION_URL}/cron-jobs`
     : `mongodb://${PROD_CONNECTION_URL}/cron-jobs`
 }
