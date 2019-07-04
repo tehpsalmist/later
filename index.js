@@ -1,6 +1,7 @@
 const express = require('express')
 const server = express()
 const mongoose = require('mongoose')
+const cors = require('cors')
 const { CronJob } = require('cron')
 
 const { getMongoURL } = require('./config')
@@ -8,7 +9,7 @@ const { jobsRouter } = require('./routes')
 const { freshJobs } = require('./controllers')
 
 const port = process.env.PORT || 2300
-
+server.use(cors())
 server.use(express.json())
 server.use(express.urlencoded({ extended: true }))
 
