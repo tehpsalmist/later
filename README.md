@@ -1,3 +1,5 @@
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=tehpsalmist/later)](https://dependabot.com)
+
 # Later
 
 ### A Cron as a Service DIY Project
