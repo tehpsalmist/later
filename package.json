@@ -4,6 +4,7 @@
   "description": "A timer service designed for integration with serverless systems",
   "main": "index.js",
   "scripts": {
+    "dev": "DEV=1 nodemon",
     "start": "nodemon"
   },
   "keywords": [
