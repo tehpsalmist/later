@@ -16,7 +16,7 @@ const calculateNextTick = (time, timeZone) => {
   return cronTime.sendAt().valueOf()
 }
 
-const getMemoryTime = () => moment().add(2, 'minutes').valueOf()
+const getMemoryTime = () => moment().add(1, 'hours').add(10, 'minutes').valueOf()
 
 const isTickWithinMemoryTime = ms => ms < getMemoryTime()
 

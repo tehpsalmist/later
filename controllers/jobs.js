@@ -159,7 +159,6 @@ exports.getJobs = async (req, res) => {
 }
 
 exports.freshJobs = async () => {
-  console.log(Object.keys(jobs).length)
   Jobs
     .find({
       nextTick: {
@@ -175,5 +174,5 @@ exports.freshJobs = async () => {
       }
     })
     .on('error', err => console.error('error refreshing jobs:', err))
-    .on('end', () => console.log('Jobs refreshed!'))
+    .on('end', () => console.log(Object.keys(jobs).length, 'jobs in the queue.'))
 }

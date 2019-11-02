@@ -36,7 +36,7 @@ mongoose.connect(getMongoURL(), { useNewUrlParser: true, useFindAndModify: false
   .catch(err => console.error(new Date().toUTCString(), err))
 
 const mainJob = new CronJob({
-  cronTime: '0 * * * * *',
+  cronTime: '45 0 */1 * * *',
   onTick: freshJobs,
   runOnInit: true,
   timeZone: 'America/New_York'
