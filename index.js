@@ -28,9 +28,9 @@ const checkJwt = jwt({
   algorithms: ['RS256']
 })
 
-server.use('/api/jobs', checkJwt, jobsRouter)
+server.use('/jobs', checkJwt, jobsRouter)
 
-server.use('/api/auth', authRouter)
+server.use('/auth', authRouter)
 
 mongoose.connect(getMongoURL(), { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true, useUnifiedTopology: true })
   .catch(err => console.error(new Date().toUTCString(), err))
