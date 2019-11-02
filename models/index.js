@@ -10,7 +10,8 @@ const jobSchema = new Schema({
   headers: {},
   payload: {},
   time: String,
-  timeZone: String
+  timeZone: String,
+  userId: String
 })
 
 const Jobs = model('Jobs', jobSchema)
