@@ -1,4 +1,4 @@
-const { validationResult } = require('express-validator/check')
+const { validationResult } = require('express-validator')
 const { CronJob } = require('cron')
 
 const { Jobs } = require('../models')
@@ -22,6 +22,8 @@ exports.createJob = async (req, res) => {
     timeZone
   } = req.body
 
+  const userId = req.user.sub
+
   const nextTick = calculateNextTick(time, timeZone)
 
   if (!nextTick) {
@@ -36,7 +38,8 @@ exports.createJob = async (req, res) => {
     headers,
     time,
     timeZone,
-    nextTick
+    nextTick,
+    userId
   })
 
   const saved = await job.save().catch(err => err instanceof Error ? err : new Error(err))
@@ -79,7 +82,7 @@ exports.deleteJob = async (req, res) => {
 
   const { __v, nextTick: removed, ...returnJob } = deletion._doc
 
-  return res.status(200).json({ job: returnJob })
+  return res.status(200).json({ job: returnJob, status: 'DELETED' })
 }
 
 exports.updateJob = async (req, res) => {
@@ -126,12 +129,14 @@ exports.updateJob = async (req, res) => {
 
 exports.getJob = async (req, res) => {
   const { id } = req.params
+  const userId = req.user.sub
 
-  const getter = await Jobs.findById(id).catch(err => err instanceof Error ? err : new Error(JSON.stringify(err)))
+  const getter = await Jobs.findOne({ _id: id, userId })
+    .catch(err => err instanceof Error ? err : new Error(JSON.stringify(err)))
 
   if (getter instanceof Error) {
     console.error(getter)
-    return res.status(500).json({ message: getter.message, stack: getter.stack, name: getter.name })
+    return res.status(500).json({ error: 'Server error while fetching data' })
   }
 
   if (!getter) {
@@ -141,6 +146,16 @@ exports.getJob = async (req, res) => {
   const { nextTick, __v, ...job } = getter._doc
 
   res.status(200).json({ job })
+}
+
+exports.getJobs = async (req, res) => {
+  Jobs.find({ userId: req.user.sub }, (err, docs) => {
+    if (err) return res.status(500).json({ error: 'Server error while fetching data' })
+
+    if (!docs || docs.length === 0) return res.status(404).json({ message: 'jobs not found' })
+
+    res.status(200).json({ jobs: docs })
+  })
 }
 
 exports.freshJobs = async () => {

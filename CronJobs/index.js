@@ -32,17 +32,17 @@ const createCronJob = async ({
 
       // save to Logging DB?
       // console.log('response', JSON.stringify({ response, startTime, endTime }, null, 2))
-      console.log('response', ok, startTime, endTime)
+      console.log('response', ok, endTime - startTime)
 
       if (!ok && failureUrl) {
         // send to failure endpoint
         /* const failureResult = */await makeRequest({
-          jobId: _id,
-          url: failureUrl,
-          method: 'POST',
-          headers: {},
-          payload: { startTime, endTime, response }
-        })
+        jobId: _id,
+        url: failureUrl,
+        method: 'POST',
+        headers: {},
+        payload: { startTime, endTime, response }
+      })
 
         // save failureResult to Logging DB?
         // console.log('failure endpoint', JSON.stringify(failureResult, null, 2))
