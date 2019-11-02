@@ -4,6 +4,8 @@ const { Headers } = fetch
 const moment = require('moment')
 const momentTimezone = require('moment-timezone')
 
+const { DEV } = process.env
+
 const calculateNextTick = (time, timeZone) => {
   const cronTime = new CronTime(cronSafeTime(time, timeZone), timeZone)
 
@@ -75,6 +77,12 @@ const cronSafeTime = (time, timeZone) => {
   }
 }
 
+/**
+ * Hit cronitor for health monitoring
+ * @param {'run' | 'complete' | 'fail'} type 
+ */
+const cronitorPing = type => !DEV && fetch(`https://cronitor.link/zaRIfx/${type}`)
+
 module.exports = {
   cronSafeTime,
   isValidHeader,
@@ -84,5 +92,6 @@ module.exports = {
   makeRequest,
   calculateNextTick,
   getMemoryTime,
-  isTickWithinMemoryTime
+  isTickWithinMemoryTime,
+  cronitorPing
 }

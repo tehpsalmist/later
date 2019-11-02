@@ -3,7 +3,7 @@ const { CronJob } = require('cron')
 
 const { Jobs } = require('../models')
 const { createCronJob, softDeleteJob, hardDeleteJob, jobs } = require('../CronJobs')
-const { calculateNextTick, isTickWithinMemoryTime, getMemoryTime } = require('../utilities')
+const { calculateNextTick, isTickWithinMemoryTime, getMemoryTime, cronitorPing } = require('../utilities')
 
 exports.createJob = async (req, res) => {
   const errors = validationResult(req)
@@ -159,6 +159,7 @@ exports.getJobs = async (req, res) => {
 }
 
 exports.freshJobs = async () => {
+  cronitorPing('run')
   Jobs
     .find({
       nextTick: {
@@ -173,6 +174,12 @@ exports.freshJobs = async () => {
         return nextTick ? createCronJob(job) : hardDeleteJob(job._id)
       }
     })
-    .on('error', err => console.error('error refreshing jobs:', err))
-    .on('end', () => console.log(Object.keys(jobs).length, 'jobs in the queue.'))
+    .on('error', err => {
+      cronitorPing('fail')
+      console.error('error refreshing jobs:', err)
+    })
+    .on('end', () => {
+      cronitorPing('complete')
+      console.log(`${Object.keys(jobs).length} jobs in the queue.`)
+    })
 }
