@@ -20,7 +20,7 @@ const createCronJob = async ({
   }
 
   const job = new CronJob({
-    cronTime: cronSafeTime(time),
+    cronTime: cronSafeTime(time, timeZone),
     start: true,
     timeZone,
     onTick: async () => {
