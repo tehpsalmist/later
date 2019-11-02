@@ -3,9 +3,8 @@ const jobsRouter = express.Router()
 const authRouter = express.Router()
 const { body } = require('express-validator')
 
-const { createJob, getJob, updateJob, deleteJob, getJobs } = require('../controllers')
+const { createJob, getJob, updateJob, deleteJob, getJobs, refreshToken } = require('../controllers')
 const { isValidHeader, isValidTimeZone, isValidTime } = require('../utilities')
-const { auth0 } = require('../config')
 
 jobsRouter.post('/', [
   body('actionUrl').isURL(),
@@ -35,19 +34,7 @@ jobsRouter.delete('/:id', deleteJob)
 
 authRouter.post('/refresh-token', [
   body('refreshToken').exists().isString()
-], (req, res) => {
-  const refresh_token = req.body.refreshToken
-  const client_secret = process.env.LATER_ON_AUTH0_CLIENT_SECRET
-  console.log(client_secret)
-
-  auth0.refreshToken({ refresh_token, client_secret }, (error, authData) => {
-    if (error) {
-      return res.status(500).json({ error })
-    }
-
-    res.status(200).json({ authData })
-  })
-})
+], refreshToken)
 
 module.exports = {
   jobsRouter,

@@ -1,0 +1,18 @@
+const { auth0 } = require('../config')
+
+const refreshToken = (req, res) => {
+  const refresh_token = req.body.refreshToken
+  const client_secret = process.env.LATER_ON_AUTH0_CLIENT_SECRET
+
+  auth0.refreshToken({ refresh_token, client_secret }, (error, authData) => {
+    if (error || !authData) {
+      return res.status(500).json({ error = 'Unable to fetch token' })
+    }
+
+    res.status(200).json({ authData })
+  })
+}
+
+module.exports = {
+  refreshToken
+}
