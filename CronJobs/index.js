@@ -36,13 +36,14 @@ const createCronJob = async ({
 
       if (!ok && failureUrl) {
         // send to failure endpoint
-        /* const failureResult = */await makeRequest({
-        jobId: _id,
-        url: failureUrl,
-        method: 'POST',
-        headers: {},
-        payload: { startTime, endTime, response }
-      })
+        /* const failureResult = */
+        await makeRequest({
+          jobId: _id,
+          url: failureUrl,
+          method: 'POST',
+          headers: {},
+          payload: { startTime, endTime, response }
+        })
 
         // save failureResult to Logging DB?
         // console.log('failure endpoint', JSON.stringify(failureResult, null, 2))
@@ -54,14 +55,10 @@ const createCronJob = async ({
         const deletion = await hardDeleteJob(_id)
 
         if (deletion instanceof Error) {
-          // log error somewhere?
           console.error('deletion error:', deletion)
         } else if (!deletion) {
           // not sure why that would happen...
           console.warn('somehow no job to delete...')
-        } else {
-          // log the successful deletion?
-          console.log('deleted:', deletion)
         }
       } else {
         if (!isTickWithinMemoryTime(nextTick)) {
