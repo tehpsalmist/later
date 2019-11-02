@@ -5,7 +5,7 @@ const moment = require('moment')
 const momentTimezone = require('moment-timezone')
 
 const calculateNextTick = (time, timeZone) => {
-  const cronTime = new CronTime(cronSafeTime(time), timeZone)
+  const cronTime = new CronTime(cronSafeTime(time, timeZone), timeZone)
 
   if (cronTime.realDate) {
     return moment(cronTime.source).valueOf() > moment(Date.now())
