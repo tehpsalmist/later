@@ -67,11 +67,11 @@ const isValidTime = value => {
   }
 }
 
-const cronSafeTime = (time, timeZone = 'America/New_York') => {
+const cronSafeTime = (time, timeZone) => {
   try {
     return new CronTime(time, timeZone).source
   } catch (e) {
-    return moment(time)
+    return moment.tz(time, timeZone)
   }
 }
 
