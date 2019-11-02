@@ -6,7 +6,7 @@ const refreshToken = (req, res) => {
 
   auth0.refreshToken({ refresh_token, client_secret }, (error, authData) => {
     if (error || !authData) {
-      return res.status(500).json({ error = 'Unable to fetch token' })
+      return res.status(500).json({ error: error || 'unable to fetch token' })
     }
 
     res.status(200).json({ authData })
