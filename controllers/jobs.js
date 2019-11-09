@@ -152,9 +152,9 @@ exports.getJobs = async (req, res) => {
   Jobs.find({ userId: req.user.sub }, (err, docs) => {
     if (err) return res.status(500).json({ error: 'Server error while fetching data' })
 
-    if (!docs || docs.length === 0) return res.status(404).json({ message: 'jobs not found' })
+    if (!docs || docs.length === 0) return res.status(404).json({ jobs: [], message: 'jobs not found' })
 
-    res.status(200).json({ jobs: docs })
+    res.status(200).json({ jobs: docs.map(({ __v, ...job }) => job) })
   })
 }
 
