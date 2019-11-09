@@ -80,7 +80,7 @@ exports.deleteJob = async (req, res) => {
     return res.status(404).json({ message: 'job not found', success: false })
   }
 
-  const { __v, nextTick: removed, ...returnJob } = deletion._doc
+  const { __v, ...returnJob } = deletion._doc
 
   return res.status(200).json({ job: returnJob, status: 'DELETED' })
 }
