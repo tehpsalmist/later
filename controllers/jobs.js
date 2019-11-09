@@ -154,7 +154,7 @@ exports.getJobs = async (req, res) => {
 
     if (!docs || docs.length === 0) return res.status(404).json({ jobs: [], message: 'jobs not found' })
 
-    res.status(200).json({ jobs: docs.map(({ __v, ...job }) => job) })
+    res.status(200).json({ jobs: docs.map(({ _doc: { __v, ...job } }) => job) })
   })
 }
 
