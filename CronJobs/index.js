@@ -41,7 +41,7 @@ const createCronJob = async ({
           jobId: _id,
           url: failureUrl,
           method: 'POST',
-          headers: {},
+          headers: { 'content-type': 'application/json' },
           payload: { startTime, endTime, response }
         })
 
