@@ -61,7 +61,7 @@ exports.createJob = async (req, res) => {
     })
   }
 
-  const { __v, nextTick: removed, ...returnJob } = saved._doc
+  const { __v, ...returnJob } = saved._doc
 
   res.status(200).json({ job: returnJob })
 }
@@ -122,7 +122,7 @@ exports.updateJob = async (req, res) => {
     createCronJob(updatedJob)
   }
 
-  const { __v, nextTick: removed, ...returnJob } = updatedJob._doc
+  const { __v, ...returnJob } = updatedJob._doc
 
   res.status(200).json({ job: returnJob })
 }
@@ -143,7 +143,7 @@ exports.getJob = async (req, res) => {
     return res.status(404).json({ message: 'job not found' })
   }
 
-  const { nextTick, __v, ...job } = getter._doc
+  const { __v, ...job } = getter._doc
 
   res.status(200).json({ job })
 }
