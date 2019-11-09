@@ -34,11 +34,11 @@ const makeRequest = async ({ jobId, url, method, headers, payload }) => {
 
   const { status, headers: returnHeaders, ok } = response
 
-  const body = response.headers['content-type'] === 'application/json'
+  const body = returnHeaders['content-type'] === 'application/json'
     ? await response.json()
     : await response.text()
 
-  return { status, body, ok, returnHeaders }
+  return { status, body, ok, headers: returnHeaders }
 }
 
 const isValidJSON = value => {
