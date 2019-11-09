@@ -63,7 +63,7 @@ exports.createJob = async (req, res) => {
 
   const { __v, ...returnJob } = saved._doc
 
-  res.status(200).json({ job: returnJob })
+  res.status(200).json({ job: returnJob, status: 'CREATED' })
 }
 
 exports.deleteJob = async (req, res) => {
@@ -124,7 +124,7 @@ exports.updateJob = async (req, res) => {
 
   const { __v, ...returnJob } = updatedJob._doc
 
-  res.status(200).json({ job: returnJob })
+  res.status(200).json({ job: returnJob, status: 'UPDATED' })
 }
 
 exports.getJob = async (req, res) => {
