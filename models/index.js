@@ -9,7 +9,7 @@ const jobSchema = new Schema({
   method: String,
   headers: {},
   payload: {},
-  time: String,
+  time: String | Number,
   timeZone: String,
   userId: String
 })
