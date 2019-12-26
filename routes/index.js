@@ -1,7 +1,7 @@
 const express = require('express')
 const jobsRouter = express.Router()
 const authRouter = express.Router()
-const { body } = require('express-validator')
+const { body, query } = require('express-validator')
 
 const { createJob, getJob, updateJob, deleteJob, getJobs, refreshToken } = require('../controllers')
 const { isValidHeader, isValidTimeZone, isValidTime } = require('../utilities')
@@ -18,7 +18,11 @@ jobsRouter.post('/', [
 
 jobsRouter.get('/:id', getJob)
 
-jobsRouter.get('/', getJobs)
+jobsRouter.get('/', [
+  query('skip').isNumeric().optional(),
+  query('page').isNumeric().optional(),
+  query('limit').isNumeric().optional()
+], getJobs)
 
 jobsRouter.put('/:id', [
   body('actionUrl').isURL().optional(),
