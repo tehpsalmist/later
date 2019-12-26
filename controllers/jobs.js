@@ -149,12 +149,55 @@ exports.getJob = async (req, res) => {
 }
 
 exports.getJobs = async (req, res) => {
-  Jobs.find({ userId: req.user.sub }, (err, docs) => {
-    if (err) return res.status(500).json({ error: 'Server error while fetching data' })
+  const errors = validationResult(req)
 
-    if (!docs || docs.length === 0) return res.status(404).json({ jobs: [], message: 'jobs not found' })
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() })
+  }
 
-    res.status(200).json({ jobs: docs.map(({ _doc: { __v, ...job } }) => job) })
+  const limit = Number(req.query.limit) > 100 ? 100 : Number(req.query.limit) || 20
+  const page = Number(req.query.page) || 1
+  const skipped = (Number(req.query.skip) || 0) + (limit * (page - 1))
+
+  const [[countErr, totalJobs], [jobsErr, jobs]] = await Promise.all([
+    new Promise((resolve, reject) => Jobs.countDocuments({ userId: req.user.sub }, (err, count) => {
+      if (err) return resolve([err, count])
+
+      return resolve([null, count])
+    })),
+    new Promise((resolve, reject) => Jobs.find({ userId: req.user.sub }, (err, docs) => {
+      if (err) return resolve([err, docs])
+
+      return resolve([null, docs])
+    }).skip(skipped).limit(limit))
+  ])
+
+  if (countErr) {
+    console.error('Count Error:', countErr)
+  }
+
+  if (jobsErr) {
+    console.error(jobsErr)
+
+    return res.status(500).json({ error: 'Server error while fetching data' })
+  }
+
+  if (!jobs || jobs.length === 0) return res.status(404).json({
+    jobs: [],
+    totalJobs: 0,
+    limit,
+    page,
+    skipped,
+    message: 'No jobs match this criteria.'
+  })
+
+  return res.status(200).json({
+    jobs: jobs.map(({ _doc: { __v, ...job } }) => job),
+    totalJobs,
+    jobsReturned: jobs.length,
+    limit,
+    page,
+    skipped
   })
 }
 
