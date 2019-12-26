@@ -32,7 +32,12 @@ server.use('/jobs', checkJwt, jobsRouter)
 
 server.use('/auth', authRouter)
 
-mongoose.connect(getMongoURL(), { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true, useUnifiedTopology: true })
+mongoose.connect(getMongoURL(), {
+  useNewUrlParser: true,
+  useFindAndModify: false,
+  useCreateIndex: true,
+  useUnifiedTopology: true
+})
   .catch(err => console.error(new Date().toUTCString(), err))
 
 const mainJob = new CronJob({
