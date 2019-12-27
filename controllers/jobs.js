@@ -212,9 +212,7 @@ exports.freshJobs = async () => {
     .cursor()
     .on('data', job => {
       if (!(jobs[job._id] instanceof CronJob)) {
-        const nextTick = calculateNextTick(job.time, job.timeZone)
-
-        return nextTick ? createCronJob(job) : hardDeleteJob(job._id)
+        return createCronJob(job)
       }
     })
     .on('error', err => {

@@ -77,6 +77,16 @@ const cronSafeTime = (time, timeZone) => {
   }
 }
 
+const isCronSyntax = thing => {
+  try {
+    const parts = thing.split(' ').length
+
+    return 5 <= parts && parts <= 6
+  } catch (e) {
+    return false
+  }
+}
+
 /**
  * Hit cronitor for health monitoring
  * @param {'run' | 'complete' | 'fail'} type 
@@ -93,5 +103,6 @@ module.exports = {
   calculateNextTick,
   getMemoryTime,
   isTickWithinMemoryTime,
-  cronitorPing
+  cronitorPing,
+  isCronSyntax
 }
