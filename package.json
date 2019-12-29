@@ -2,6 +2,10 @@
   "name": "later",
   "version": "0.0.1",
   "description": "A timer service designed for integration with serverless systems",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/tehpsalmist/later.git"
+  },
   "main": "index.js",
   "scripts": {
     "dev": "DEV=1 nodemon",
@@ -25,7 +29,7 @@
     "jwks-rsa": "^1.6.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.27",
-    "mongoose": "^5.8.2",
+    "mongoose": "^5.8.3",
     "node-fetch": "^2.6.0"
   }
 }
