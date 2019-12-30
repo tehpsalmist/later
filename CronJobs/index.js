@@ -56,6 +56,10 @@ if (DEV) {
       process.exit(0)
     }, 75000)
   })
+
+  pmx.action('status', reply => {
+    reply({ jobsEnqueued: Object.keys(jobs).length, running: Object.keys(running).length })
+  })
 }
 
 const createCronJob = async ({
