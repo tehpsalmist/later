@@ -4,7 +4,6 @@ const {
   calculateNextTick,
   isTickWithinMemoryTime,
   cronSafeTime,
-  getMemoryTime,
   isCronSyntax
 } = require('../utilities')
 const { Jobs } = require('../models')
@@ -107,7 +106,7 @@ const createCronJob = async ({
 
     // save to Logging DB?
     // console.log('response', JSON.stringify({ response, startTime, endTime }, null, 2))
-    console.log('response', ok, endTime - startTime, _id)
+    console.log('response', ok, endTime - startTime, _id, actionUrl)
 
     if (!ok && failureUrl) {
       // send to failure endpoint
@@ -142,7 +141,7 @@ const createCronJob = async ({
 
       const updated = await Jobs.findByIdAndUpdate(_id, { nextTick: nextNextTick })
         .catch(err => err instanceof Error ? err : new Error(JSON.stringify(err)))
-      
+
       if (updated instanceof Error) {
         console.error(`Error while updating nexttick for ${_id}:`, updated)
       }
