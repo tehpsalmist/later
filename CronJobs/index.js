@@ -78,7 +78,7 @@ const createCronJob = async ({
     jobs[_id].stop()
   }
 
-  const jobIsLate = nextTick < Date.now()
+  const jobIsLate = nextTick < Date.now() && !running[_id]
 
   if (jobIsLate && !isCronSyntax(time)) {
     return onTick()
