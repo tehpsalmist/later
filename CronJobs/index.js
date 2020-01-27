@@ -13,6 +13,7 @@ const jobs = {}
 const running = {}
 
 let stopNow = false
+let deferred = 0
 
 if (DEV) {
   process.stdin.on('data', buffer => {
@@ -25,6 +26,11 @@ if (DEV) {
 
       setInterval(() => {
         if (Object.keys(running).length === 0) {
+          console.log(JSON.stringify({
+            success: true,
+            message: `waited for ${activeJobs} active jobs to resolve and deferred ${deferred} jobs`
+          }, null, 2))
+
           process.exit(0)
         }
       }, 1000)
@@ -40,11 +46,16 @@ if (DEV) {
   const pmx = require('@pm2/io')
 
   pmx.action('shutdown', reply => {
+    const activeJobs = Object.keys(running).length
+
     stopNow = true
 
     setInterval(async () => {
       if (Object.keys(running).length === 0) {
-        await reply({ success: true })
+        await reply({
+          success: true,
+          message: `waited for ${activeJobs} active jobs to resolve and deferred ${deferred} jobs`
+        })
 
         process.exit(0)
       }
@@ -97,6 +108,8 @@ const createCronJob = async ({
 
   async function onTick () {
     if (stopNow) {
+      deferred++
+
       return
     }
 
