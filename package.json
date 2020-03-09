@@ -20,16 +20,16 @@
   "license": "ISC",
   "dependencies": {
     "@pm2/io": "^4.3.3",
-    "auth0": "^2.21.0",
+    "auth0": "^2.23.0",
     "cors": "^2.8.5",
     "cron": "^1.8.2",
     "express": "^4.17.1",
     "express-jwt": "^5.3.1",
-    "express-validator": "^6.3.1",
-    "jwks-rsa": "^1.6.2",
+    "express-validator": "^6.4.0",
+    "jwks-rsa": "^1.7.0",
     "moment": "^2.24.0",
-    "moment-timezone": "^0.5.27",
-    "mongoose": "^5.8.9",
+    "moment-timezone": "^0.5.28",
+    "mongoose": "^5.9.2",
     "node-fetch": "^2.6.0"
   }
 }
