@@ -182,9 +182,10 @@ exports.getJobs = async (req, res) => {
     return res.status(500).json({ error: 'Server error while fetching data' })
   }
 
-  if (!jobs || jobs.length === 0) return res.status(404).json({
+  if (!jobs || jobs.length === 0) return res.status(200).json({
     jobs: [],
     totalJobs: 0,
+    jobsReturned: 0,
     limit,
     page,
     skipped,
