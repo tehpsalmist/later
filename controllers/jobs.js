@@ -15,6 +15,7 @@ exports.createJob = async (req, res) => {
   const {
     actionUrl,
     failureUrl,
+    failureLogging,
     method = 'GET',
     headers,
     payload,
@@ -33,6 +34,7 @@ exports.createJob = async (req, res) => {
   const job = Jobs({
     actionUrl,
     failureUrl,
+    failureLogging,
     method,
     payload,
     headers,
@@ -42,10 +44,10 @@ exports.createJob = async (req, res) => {
     userId
   })
 
-  const saved = await job.save().catch(err => err instanceof Error ? err : new Error(err))
+  const saved = await job.save().catch(err => err instanceof Error ? err : new Error(JSON.stringify(err)))
 
   if (saved instanceof Error) {
-    res.status(500).json({ message: 'An error occurred while persisting the data. You might be missing parameters.' })
+    return res.status(500).json({ message: 'An error occurred while storing your job. You might be missing parameters.' })
   }
 
   if (isTickWithinMemoryTime(nextTick)) {
@@ -54,7 +56,9 @@ exports.createJob = async (req, res) => {
       payload,
       actionUrl,
       failureUrl,
+      failureLogging,
       method,
+      userId,
       headers,
       time,
       timeZone
@@ -101,7 +105,7 @@ exports.updateJob = async (req, res) => {
   }
 
   // Sanitize the updates by extracting valid keys from the body
-  const updates = ['actionUrl', 'failureUrl', 'method', 'headers', 'payload', 'time', 'timeZone']
+  const updates = ['actionUrl', 'failureUrl', 'failureLogging', 'method', 'headers', 'payload', 'time', 'timeZone']
     .filter(key => req.body[key] !== undefined)
     .reduce((map, key) => ({ ...map, [key]: req.body[key] }), {})
 
@@ -110,7 +114,7 @@ exports.updateJob = async (req, res) => {
   }
 
   const updatedJob = await Jobs.findByIdAndUpdate(id, updates, { new: true })
-    .catch(err => err instanceof Error ? err : new Error(err))
+    .catch(err => err instanceof Error ? err : new Error(JSON.stringify(err)))
 
   if (updatedJob instanceof Error) {
     res.status(500).json({ message: 'An error occurred while persisting the data.' })
@@ -169,7 +173,7 @@ exports.getJobs = async (req, res) => {
       if (err) return resolve([err, docs])
 
       return resolve([null, docs])
-    }).skip(skipped).limit(limit))
+    }).sort({ nextTick: 'asc' }).skip(skipped).limit(limit))
   ])
 
   if (countErr) {
@@ -208,6 +212,9 @@ exports.freshJobs = async () => {
     .find({
       nextTick: {
         $lte: getMemoryTime()
+      },
+      failed: {
+        $ne: true
       }
     })
     .cursor()

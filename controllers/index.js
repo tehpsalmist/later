@@ -1,4 +1,5 @@
 module.exports = {
   ...require('./jobs'),
-  ...require('./auth')
+  ...require('./auth'),
+  ...require('./failures')
 }

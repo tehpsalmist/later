@@ -6,7 +6,7 @@ const {
   cronSafeTime,
   isCronSyntax
 } = require('../utilities')
-const { Jobs } = require('../models')
+const { Jobs, Failures } = require('../models')
 const { DEV } = process.env
 
 const jobs = {}
@@ -23,6 +23,8 @@ if (DEV) {
       process.stdin.removeAllListeners('data')
 
       stopNow = true
+
+      const activeJobs = Object.keys(running).length
 
       setInterval(() => {
         if (Object.keys(running).length === 0) {
@@ -75,11 +77,13 @@ if (DEV) {
 
 const createCronJob = async ({
   _id,
+  userId,
   time,
   timeZone,
   actionUrl,
   completedUrl,
   failureUrl,
+  failureLogging,
   payload,
   method,
   headers,
@@ -121,14 +125,8 @@ const createCronJob = async ({
 
     const endTime = Date.now()
 
-    // save to Logging DB?
-    // console.log('response', JSON.stringify({ response, startTime, endTime }, null, 2))
-    console.log('response', ok, endTime - startTime, _id, actionUrl)
-
-    if (!ok && failureUrl) {
-      // send to failure endpoint
-      /* const failureResult = */
-      await makeRequest({
+    if (!ok) {
+      const sentFailure = failureUrl && await makeRequest({
         jobId: _id,
         url: failureUrl,
         method: 'POST',
@@ -136,13 +134,42 @@ const createCronJob = async ({
         payload: { startTime, endTime, response }
       })
 
-      // save failureResult to Logging DB?
+      if (failureLogging) {
+        const failureEntry = Failures({
+          jobId: _id,
+          userId,
+          statusCode: response.status,
+          requestTime: new Date().toISOString(),
+          requestDuration: endTime - startTime,
+          response: response.errorMessage ? response.name : response,
+          errorMessage: response.errorMessage,
+          job: {
+            actionUrl,
+            failureUrl,
+            failureLogging,
+            method,
+            payload,
+            headers,
+            time,
+            timeZone,
+            nextTick,
+            userId
+          }
+        })
+
+        const savedFailure = await failureEntry.save()
+          .catch(err => err instanceof Error ? err : new Error(JSON.stringify(err)))
+
+        if (savedFailure instanceof Error) {
+          console.error('couldn\'t save failure:', savedFailure)
+        }
+      }
       // console.log('failure endpoint', JSON.stringify(failureResult, null, 2))
     }
 
     const nextNextTick = calculateNextTick(time, timeZone)
 
-    if (!nextNextTick) {
+    if (!nextNextTick && ok) {
       const deletion = await hardDeleteJob(_id)
 
       if (deletion instanceof Error) {
@@ -156,7 +183,7 @@ const createCronJob = async ({
         softDeleteJob(_id)
       }
 
-      const updated = await Jobs.findByIdAndUpdate(_id, { nextTick: nextNextTick })
+      const updated = await Jobs.findByIdAndUpdate(_id, ok || isCronSyntax(time) ? { nextTick: nextNextTick } : { failed: true })
         .catch(err => err instanceof Error ? err : new Error(JSON.stringify(err)))
 
       if (updated instanceof Error) {

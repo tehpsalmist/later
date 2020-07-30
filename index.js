@@ -7,7 +7,7 @@ const cors = require('cors')
 const { CronJob } = require('cron')
 
 const { getMongoURL } = require('./config')
-const { jobsRouter, authRouter } = require('./routes')
+const { jobsRouter, authRouter, failuresRouter } = require('./routes')
 const { freshJobs } = require('./controllers')
 
 const { DEV, PORT: port = 2300 } = process.env
@@ -30,6 +30,7 @@ const checkJwt = jwt({
 
 server.use('/jobs', checkJwt, jobsRouter)
 
+server.use('/failures', checkJwt, failuresRouter)
 server.use('/auth', authRouter)
 
 mongoose.connect(getMongoURL(), {
