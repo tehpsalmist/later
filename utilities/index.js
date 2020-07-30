@@ -31,6 +31,11 @@ const makeRequest = async ({ jobId, url, method, headers, payload }) => {
     headers: fetchHeaders,
     body: ['GET', 'DELETE'].indexOf(method) === -1 ? JSON.stringify(payload) : undefined
   })
+    .catch(err => err instanceof Error ? err : new Error(JSON.stringify(err)))
+
+  if (response instanceof Error) {
+    return { ok: false, errorMessage: response.message, name: response.name }
+  }
 
   const { status, headers: returnHeaders, ok } = response
 
@@ -39,6 +44,13 @@ const makeRequest = async ({ jobId, url, method, headers, payload }) => {
     : await response.text()
 
   return { status, body, ok, headers: returnHeaders }
+}
+
+const isNonRecursiveURL = url => {
+  const desiredOrigin = new URL(url).origin
+  const serverOrigin = 'https://later-on.com'
+
+  return desiredOrigin !== serverOrigin
 }
 
 const isValidJSON = value => {
@@ -95,6 +107,7 @@ const cronitorPing = type => !DEV && fetch(`https://cronitor.link/zaRIfx/${type}
 
 module.exports = {
   cronSafeTime,
+  isNonRecursiveURL,
   isValidHeader,
   isValidTime,
   isValidTimeZone,
