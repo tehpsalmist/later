@@ -29,7 +29,7 @@
     "jwks-rsa": "^1.11.0",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.32",
-    "mongoose": "^5.11.4",
+    "mongoose": "^5.11.7",
     "node-fetch": "^2.6.1"
   }
 }
