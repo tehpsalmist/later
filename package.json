@@ -19,7 +19,7 @@
   "author": "Ben Steward <bstewardcodes@gmail.com> (https://tehpsalmist.com)",
   "license": "ISC",
   "dependencies": {
-    "@pm2/io": "^4.3.5",
+    "@pm2/io": "^5.0.0",
     "auth0": "^2.27.1",
     "cors": "^2.8.5",
     "cron": "^1.8.2",
