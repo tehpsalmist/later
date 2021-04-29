@@ -1,0 +1,33 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: weekly
+    time: "10:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: auth0
+    versions:
+    - 2.32.0
+    - 2.33.0
+    - 2.34.0
+    - 2.34.1
+  - dependency-name: mongoose
+    versions:
+    - 5.11.13
+    - 5.11.14
+    - 5.11.15
+    - 5.11.18
+    - 5.11.19
+    - 5.12.2
+    - 5.12.3
+  - dependency-name: jwks-rsa
+    versions:
+    - 1.12.2
+    - 1.12.3
+    - 2.0.1
+    - 2.0.2
+  - dependency-name: express-validator
+    versions:
+    - 6.10.0
